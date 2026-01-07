@@ -20,7 +20,7 @@ export function Communities() {
       role: "Member",
       description:
         "Part of UC Berkeley's premier startup accelerator, engaging with entrepreneurial ecosystem and learning about technology commercialization and venture creation.",
-      image: "/skydeck-berkeley.jpg",
+      image: "/communities/skydeck-logo.png",
     },
     {
       name: "NSF I-Corps",
@@ -28,23 +28,24 @@ export function Communities() {
       role: "Participant",
       description:
         "Participated in the National Science Foundation Innovation Corps program, learning customer discovery and technology commercialization methodologies for translating research into market impact.",
-      image: "/nsf-icorps.jpg",
+      image: "/communities/nsf-icorps-logo.png",
     },
     {
       name: "Courtyard Ventures",
       slug: "courtyard-ventures",
-      role: "Member",
+      role: "Fund III Undergraduate VC Intern",
       description:
-        "Engaged with Berkeley's venture capital and entrepreneurship community, exploring the intersection of technology innovation and startup financing.",
-      image: "/courtyard-ventures.jpg",
+        "Sourced and analyzed startups across fintech, deeptech, climate tech, and mobility sectors, conducting due diligence for venture capital funds across the nation.",
+      image: "/communities/courtyard-ventures.png",
+      objectFit: "contain" as const,
     },
     {
       name: "Berkeley Venture Capital",
       slug: "berkeley-venture-capital",
-      role: "Member",
+      role: "Vice President - External and Sourcing",
       description:
-        "Active member of Berkeley's student-run venture capital organization, learning about investment strategies and evaluating early-stage technology startups.",
-      image: "/berkeley-venture-capital.jpg",
+        "Led the External and Sourcing committee, maintaining a database of 150+ startups across DeepTech, EdTech, B2B SaaS, and GreenTech, while facilitating connections between founders and top-tier VC firms.",
+      image: "/communities/berkeley-venture-capital.png",
     },
     {
       name: "Fung Institute",
@@ -52,9 +53,14 @@ export function Communities() {
       role: "Member",
       description:
         "Engaged with Berkeley's center for engineering leadership, focusing on the intersection of technology, business, and societal impact.",
-      image: "/fung-institute.jpg",
+      image: "/communities/fung-institute.png",
+      objectFit: "contain" as const,
     },
   ]
+
+  const handleClick = () => {
+    sessionStorage.setItem("portfolioScrollPosition", window.scrollY.toString())
+  }
 
   return (
     <section id="communities" className="py-20 px-4 relative overflow-hidden">
@@ -68,15 +74,20 @@ export function Communities() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {communities.map((community, i) => (
             <ScrollReveal key={i} delay={i * 100} direction="scale">
-              <Link href={`/communities/${community.slug}`}>
+              <Link href={`/communities/${community.slug}`} onClick={handleClick}>
                 <div className="bg-card/50 backdrop-blur-sm border border-border rounded-lg overflow-hidden group hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 hover:-translate-y-2 cursor-pointer">
-                  <div className="relative h-48 overflow-hidden">
+                  <div
+                    className={`relative h-48 overflow-hidden ${community.objectFit === "contain" ? "bg-white" : ""}`}
+                  >
                     <img
                       src={community.image || "/placeholder.svg"}
                       alt={community.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                      className={`w-full h-full ${community.objectFit === "contain" ? "object-contain p-4" : "object-cover"} group-hover:scale-110 transition-transform duration-700`}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <div
+                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                      style={{ background: "linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent)" }}
+                    />
                   </div>
 
                   <div className="p-6">

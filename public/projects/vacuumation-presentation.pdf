@@ -1,0 +1,91 @@
+Alan Yang, Aarav Bedi, 
+Elizabeth Gomez-Vega
+
+Vacuumation
+Automated Vacuum 
+Pump
+
+Problem 
+04
+
+03
+Processes
+Challenges/Solutions
+Solution
+02
+
+01
+
+TABLE OF CONTENTS
+
+PROBLEM 
+
+SOLUTION 
+
+PROCESSES
+What We Used
+SENSORS
+ACTUATION
+TRANSMISSION
+Pressure Transducer 
+Speaker, LED, Button, 
+Vacuum Pump, Trap 
+Pod, Wifi outlet
+ESP 32, TCP, IFTTT, 
+Adafruit, MQTT, Email
+
+Thought Process 
+
+Thought Process
+How do all the parts interface with each other?
+
+AUTOMATED 
+VACUUM PUMP
+ESP32, BREADBOARD
+WIFI OUTLET FOR REMOTE 
+ON/OFF
+MQTT, IFTTT, PYTHON, TCP 
+FOR DATA TRANSMISSION
+PRESSURE TRANSDUCER,
+PUMP STATE MONITOR
+
+Primary Functions
+Detect PressureConnect to Outlet
+Turn Pump OnTurn Pump Off
+
+Secondary Functions
+Online Pressure Monitor Modes
+Visual NotificationAuditory Notifications
+
+Tertiary Function
+Leak DetectionDashboard
+
+Connectivity
+Spaced out publishing
+Used local network & TCP
+4
+
+3
+Reliability
+Error catching
+Extensive testing
+Packaging
+Aesthetically pleasant casing
+Optimized and simplified wiring
+
+Timing
+Clocks within functions
+Global timing
+2
+
+1
+
+Challenges & Solutions
+
+DEMO
+
+THANK YOU
+PRESENTERS:
+ALAN YANG
+AARAV BEDI
+ELIZABETH GOMEZ-VEGA

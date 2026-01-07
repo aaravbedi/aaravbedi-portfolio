@@ -11,7 +11,7 @@ export function Navigation() {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50)
 
-      const sections = ["home", "about", "skills", "articles", "internships", "projects", "communities"]
+      const sections = ["home", "about", "articles", "internships", "projects", "communities", "skills"]
       const current = sections.find((section) => {
         const element = document.getElementById(section)
         if (element) {
@@ -30,11 +30,11 @@ export function Navigation() {
   const navLinks = [
     { name: "</Home>", href: "#home", id: "home" },
     { name: "</About>", href: "#about", id: "about" },
-    { name: "</Skills>", href: "#skills", id: "skills" },
     { name: "</Articles>", href: "#articles", id: "articles" },
     { name: "</Internships>", href: "#internships", id: "internships" },
     { name: "</Projects>", href: "#projects", id: "projects" },
     { name: "</Communities>", href: "#communities", id: "communities" },
+    { name: "</Skills>", href: "#skills", id: "skills" },
   ]
 
   return (
@@ -46,7 +46,7 @@ export function Navigation() {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 group cursor-pointer">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center overflow-hidden border-2 border-primary/50 group-hover:border-primary transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-primary/50">
+            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center overflow-hidden border-2 border-primary/50 group-hover:border-primary transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-primary/50">
               <img src="/profile-photo.png" alt="Avatar" className="w-full h-full object-cover" />
             </div>
           </div>

@@ -1,5 +1,8 @@
+"use client"
+
+import { useEffect } from "react"
 import { notFound } from "next/navigation"
-import { ArrowLeft, Github, ExternalLink } from "lucide-react"
+import { ArrowLeft, ExternalLink } from "lucide-react"
 import Link from "next/link"
 
 const projectsData = {
@@ -7,7 +10,7 @@ const projectsData = {
     title: "Ball Balancing Bot",
     description:
       "A 3-DOF ball-balancing platform with advanced PID control for precise tilt stabilization and rapid settling time.",
-    image: "/ball-balancing-bot.jpg",
+    image: "/ball-balancing-bot.png",
     fullDescription: `The Ball Balancing Bot project demonstrates advanced control systems and mechatronics integration. This 3-DOF (degrees of freedom) ball-balancing platform uses nonlinear kinematics and dynamics calculations to maintain precise balance of a ball on a movable platform.
 
 The control system uses a discrete PID controller carefully tuned with parameters Kp=12, Ki=1.5, and Kd=0.8 to achieve exceptional performance. The system maintains a steady-state tilt error of less than 2 degrees with a settling time under 0.8 seconds, demonstrating responsive and accurate control.
@@ -16,8 +19,7 @@ The control loop was implemented in Python and runs at 100 Hz, providing real-ti
 
 This project combines theoretical control systems knowledge with practical implementation, including sensor integration, real-time computation, and precision mechanical design. It showcases the complete engineering process from mathematical modeling through physical implementation.`,
     tech: ["Python", "PID Control", "SolidWorks", "3D Printing", "Kinematics", "Dynamics", "Real-time Systems"],
-    github: "#",
-    demo: "https://example.com/ball-bot",
+    demo: "https://docs.google.com/presentation/d/134ZT47i5cJWxPDyVANhyy9gzzrmVPdBbxg3b51epDyE/edit?usp=sharing",
     highlights: [
       "Sub-2° steady-state tilt error with advanced PID tuning",
       "Less than 0.8s settling time for rapid stabilization",
@@ -29,7 +31,7 @@ This project combines theoretical control systems knowledge with practical imple
   "prosthetic-hand": {
     title: "Prosthetic Hand",
     description: "A functional prosthetic glove with real-time haptic feedback and high grip force capabilities.",
-    image: "/prosthetic-hand.jpg",
+    image: "/prosthetic-hand.png",
     fullDescription: `The Prosthetic Hand project represents a comprehensive approach to assistive technology, combining mechanical design, control systems, and haptic feedback to create a functional prosthetic device.
 
 The device was designed using SolidWorks with extensive FEA (Finite Element Analysis) to optimize the structural components. It integrates 4 MG90S servo motors with PTFE (Polytetrafluoroethylene) tendon routing system, mimicking the natural tendon structure of human hands for smooth and reliable finger movement.
@@ -38,8 +40,17 @@ A closed-loop control system using an ESP32 microcontroller and FSR (Force Sensi
 
 One of the key innovations is the integration of a DRV2605 haptic driver, providing real-time haptic feedback to the user. This tactile feedback significantly enhances the user's ability to control grip strength and handle delicate objects. The project demonstrates the successful integration of mechanical engineering, electronics, and user-centered design in creating practical assistive technology.`,
     tech: ["SolidWorks", "FEA", "ESP32", "Mechatronics", "Haptic Feedback", "Servo Control", "PTFE"],
-    github: "#",
     demo: "#",
+    documents: [
+      {
+        title: "Project Presentation",
+        url: "https://docs.google.com/presentation/d/1-yPsOyUtKVXo_OZnawSj7eqkzdsdietYzzt6zGrEpJc/edit?usp=sharing",
+      },
+      {
+        title: "Project Video",
+        url: "https://drive.google.com/file/d/1ROvsaSVkQfDVGxhiZqhE3Kmf-K4aEX9N/view?usp=sharing",
+      },
+    ],
     highlights: [
       "18N grip force (310% improvement over baseline)",
       "0.5s actuation time for responsive control",
@@ -52,15 +63,24 @@ One of the key innovations is the integration of a DRV2605 haptic driver, provid
   "vacuum-bagging-system": {
     title: "Vacuum Bagging System",
     description: "A specialized system for composite layups with optimal resin distribution and minimal void content.",
-    image: "/vacuum-bagging-system.jpg",
+    image: "/vacuum-bagging-system.png",
     fullDescription: `The Vacuum Bagging System was designed and manufactured for advanced composite manufacturing processes. This system enables the creation of high-quality carbon fiber and composite parts through controlled vacuum pressure and resin infusion.
 
 The design focuses on achieving optimal resin distribution throughout the composite layup while minimizing void content, which is critical for the structural integrity and performance of composite parts. Advanced manufacturing techniques were employed to ensure consistent results across multiple production runs.
 
 The system includes custom-designed vacuum ports, resin distribution channels, and pressure monitoring capabilities. Process parameters were carefully optimized to work with various composite materials and part geometries. This project demonstrates expertise in composite manufacturing, process engineering, and quality control methodologies essential for aerospace and automotive applications.`,
     tech: ["Composite Manufacturing", "CAD", "Process Design", "Carbon Fiber", "Vacuum Systems", "Quality Control"],
-    github: "#",
     demo: "#",
+    documents: [
+      {
+        title: "Project Presentation",
+        url: "https://docs.google.com/presentation/d/1MXz_V63qPB6irBBMqiZ6Iy4i2wL4WSNa/view?usp=sharing",
+      },
+      {
+        title: "Technical Documentation",
+        url: "https://drive.google.com/file/d/1rGtOIpJHgtZdhP6OW1ws1Gqn_aB0PsAe/view?usp=sharing", // Updated to correct Google Drive link for technical documentation
+      },
+    ],
     highlights: [
       "Optimal resin distribution system design",
       "Minimal void content in finished parts",
@@ -82,7 +102,6 @@ Key aspects of the project included suspension geometry optimization, drivetrain
 
 This build demonstrates proficiency in metalworking, welding, mechanical assembly, and system integration - skills directly applicable to manufacturing and product development in various industries.`,
     tech: ["TIG Welding", "Mechanical Design", "Fabrication", "Automotive Engineering", "CAD", "System Integration"],
-    github: "#",
     demo: "#",
     highlights: [
       "Complete vehicle restoration from ground up",
@@ -100,7 +119,7 @@ This build demonstrates proficiency in metalworking, welding, mechanical assembl
   "cpap-machine": {
     title: "CPAP Machine Design",
     description: "Medical device design focused on user comfort and manufacturing efficiency.",
-    image: "/cpap-machine.jpg",
+    image: "/cpap-machine.png",
     fullDescription: `The CPAP (Continuous Positive Airway Pressure) Machine Design project focuses on creating a medical device that balances user comfort, clinical effectiveness, and manufacturing efficiency. This project applies Design for Manufacturing (DFM) principles throughout the development process.
 
 Extensive CAD iterations were conducted to optimize the design for both function and production. Key considerations included airflow dynamics, noise reduction, ergonomics, and material selection appropriate for medical applications. The design process involved collaboration with manufacturing partners to ensure the device could be produced efficiently while meeting medical device standards and regulations.
@@ -109,8 +128,17 @@ User-centered design principles were applied throughout development, with partic
 
 This project demonstrates understanding of medical device development, regulatory considerations, DFM principles, and the ability to balance multiple competing requirements in product design.`,
     tech: ["Medical Device Design", "CAD", "DFM", "Airflow Analysis", "Ergonomics", "Regulatory Compliance"],
-    github: "#",
     demo: "#",
+    documents: [
+      {
+        title: "Project Presentation",
+        url: "https://docs.google.com/presentation/d/1FQ3T9F89BRHSmIvU9s4CyheIuOjSniUzLW3pPHlwRNQ/edit?usp=sharing",
+      },
+      {
+        title: "IEEE Format Report",
+        url: "https://docs.google.com/document/d/1dOTtox0vLV0HBDgT_dh8tU1jRFcssUgg/edit?usp=sharing&ouid=102263742053136784883&rtpof=true&sd=true",
+      },
+    ],
     highlights: [
       "User-focused design for improved comfort",
       "Extensive DFM optimization for production",
@@ -140,7 +168,6 @@ The data collected by the helmet can be used for immediate safety alerts, long-t
       "Safety Systems",
       "Embedded Systems",
     ],
-    github: "#",
     demo: "#",
     highlights: [
       "Real-time impact detection and logging",
@@ -160,6 +187,10 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   if (!project) {
     notFound()
   }
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
 
   return (
     <div className="min-h-screen bg-background">
@@ -182,18 +213,11 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           <h1 className="text-4xl md:text-5xl font-bold mb-6">{project.title}</h1>
           <p className="text-xl text-muted-foreground leading-relaxed mb-8">{project.description}</p>
           <div className="flex gap-4 mb-8">
-            {project.github && (
-              <a
-                href={project.github}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-card border border-border rounded-md hover:border-primary/50 transition-all duration-300"
-              >
-                <Github className="w-4 h-4" />
-                <span>View on GitHub</span>
-              </a>
-            )}
-            {project.demo && (
+            {project.demo && project.demo !== "#" && (
               <a
                 href={project.demo}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-background rounded-md hover:bg-primary/90 transition-all duration-300"
               >
                 <ExternalLink className="w-4 h-4" />
@@ -205,13 +229,19 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
       </section>
 
       {/* Project Image */}
-      <section className="py-8 px-4 bg-secondary/10">
-        <div className="container mx-auto max-w-6xl">
-          <div className="relative aspect-video bg-card border border-border rounded-lg overflow-hidden">
-            <img src={project.image || "/placeholder.svg"} alt={project.title} className="w-full h-full object-cover" />
+      {!project.documents && (
+        <section className="py-8 px-4 bg-secondary/10">
+          <div className="container mx-auto max-w-6xl">
+            <div className="relative aspect-video bg-card border border-border rounded-lg overflow-hidden">
+              <img
+                src={project.image || "/placeholder.svg"}
+                alt={project.title}
+                className="w-full h-full object-cover"
+              />
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Gallery Section */}
       {project.gallery && project.gallery.length > 0 && (
@@ -232,6 +262,44 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                     <p className="text-sm text-muted-foreground">{image.caption}</p>
                   </div>
                 </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Documents Section */}
+      {project.documents && project.documents.length > 0 && (
+        <section className="py-12 px-4 bg-secondary/10">
+          <div className="container mx-auto max-w-6xl">
+            <h2 className="text-2xl font-bold mb-8 font-mono text-primary">{"<Project Documents>"}</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {project.documents.map((doc, i) => (
+                <a
+                  key={i}
+                  href={doc.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group bg-card border border-border rounded-lg p-6 hover:border-primary transition-all duration-300"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors duration-300">
+                      <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                        />
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold mb-1">{doc.title}</h3>
+                      <p className="text-sm text-muted-foreground">View PDF Document</p>
+                    </div>
+                    <ExternalLink className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors duration-300" />
+                  </div>
+                </a>
               ))}
             </div>
           </div>

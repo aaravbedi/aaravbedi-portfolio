@@ -1,0 +1,744 @@
+Vacuumation 
+ 
+Problem: 
+We were facing significant challenges with oil leakage and excessive vapor formation in 
+our vacuum pump system. Despite implementing a trap pod equipped with a two-way 
+valve, intended to contain and control these issues, there has been no noticeable 
+improvement. The system continues to struggle with unmitigated oil leaks and vapor 
+emissions, highlighting the need for a more effective solution. 
+ 
+Solution: Reduce the usage of the pump when it is no longer needed, in turn reducing 
+usage cost and energy waste. 
+In response, we decided to redesign our method by incorporating a single vertical valve 
+that is intended to give a more solid seal and improved control. In addition, we are 
+implementing an automated shutdown mechanism that will deactivate the vacuum pump 
+when not in use. To enable this update, we are using technologies like ESP32, Adafruit, 
+and IFTTT, which will streamline processes and improve system responsiveness. These 
+changes are projected to considerably enhance the efficiency and reliability of our 
+vacuum system, saving operational time and lowering the danger of oil leaks and vapor 
+generation. 
+ 
+COTS Integration: 
+ 
+Functionalities: 
+1. Basic functionalities: 
+a. Detect vacuum pressure 
+i. Circuit: Pressure transducer to ESP32 
+ii. Code logic: take the analogue signal from the analogue wire of the 
+pressure transducer as an input. Convert it to a digital signal. Map 
+the signal to the pressure range of the sensor to produce readings in 
+PSI. 
+b. Detect pump state 
+i. Circuit: pressure transducer attached to the pump air lines 
+ii. Code logic: if the pressure readings are rising or held above a 
+threshold value with noise within a certain range, the pump is on. 
+c. Turn on pump when needed via Wifi outlet 
+i. IOT: Connect Adafruit to TP-Link Kasa. Allow Adafruit to switch on 
+the Wifi outlet. 
+
+ii. Code logic: If the pressure drops below threshold and the pump is 
+off, send a singular trigger signal to Adafruit. The signal will persist 
+until the next event happens 
+d. Turn off pump when not needed 
+i. IOT: same with above 
+ii. Code logic: If the pressure goes above the threshold and the pump is 
+on, send a singular trigger signal to Adafruit and switch off the Wifi 
+outlet. 
+2. Secondary functionalities: 
+a. Real time pressure monitor on phone/website 
+i. Code logic: Publish pressure separately from the trigger signal every 
+second. 
+b. Auditory notification to surrounding personnel 
+i. Circuit: buzzer connected to an output pin. 
+ii. Code logic: activate output pin in a preset sequence to play the 
+activation before activation and deactivation tune after deactivation. 
+c. Status visual (flashing LED) 
+i. Circuit: LED connected to an output pin 
+ii. Code logic: cycle duty cycle for breathing effect during sleep. Flash 
+during activation. 
+d. Always-on mode 
+i. Logic: 3 modes: always on, always off, auto. 
+1. Always on: monitor pressure as usual, monitor outlet status. If 
+off, turn on. If on, do nothing. 
+2. Always off: same with above but off 
+3. Auto: automated mode. 
+ii. Actuated by physical switch/button 
+1. Code: press the button to cycle between 3 modes. 
+iii. Actuated by app 
+1. Logic: 
+3. Tertiary functionalities: 
+a. Aesthetically pleasant housing 
+b. Functional app/web UI 
+c. Leak detection 
+i. Logic: If the pressure drops too quickly when the pump is off, report 
+leak. 
+
+ii. Code: Compare pressure rate of change (delta_P)to the expected 
+rate of change (delta_P0). If delta_P > delta_P0, report leak to 
+Adafruit feed. Send notification through IFTTT. 
+iii. Worsening leak: if delta_P is increasing constantly, report worsening 
+leak to Adafruit feed after a set amount of wait time. Send 
+notification through IFTTT. 
+iv. Reset: Reset trigger through Adafruit. If reset trigger pressed,  
+d. Statistics Recording 
+i. Time on 
+ii. Time off 
+iii. Lowest pressure 
+iv. Highest pressure 
+v. Average pressure 
+vi. Pressure anomalies 
+4. Further development 
+a. Active noise cancellation 
+i. Circuit: microphone connected to input pin, speaker connected to 
+output pin 
+ii. Code logic: record microphone frequency and play the reverse 
+frequency to cancel pump noise. 
+ 
+
+from machine import
+ ADC, Pin, Timer, PWM 
+from time import
+ sleep, ticks_ms 
+from umqtt1 import
+ MQTTClient 
+import
+ network, sys 
+import
+ socket 
+ 
+ 
+#Adafruit + MQTT Setup
+ 
+adafruitIoUrl = 'io.adafruit.com'
+ 
+adafruitUsername = 'YAJ760' # CHANGE THIS WITH YOUR OWN!
+ 
+adafruitAioKey = 'aio_Ivha97Cn8deGhE8fNPavN419D9dq' # CHANGE THIS WITH YOUR 
+OWN!
+ 
+feedName = "YAJ760/feeds/vacuumation" # CHANGE THIS WITH YOUR OWN! (also known 
+as "MQTT by key")
+ 
+    
+'''Function with everything needed to publish a message 
+Simply call this function anytime you want to publish a message. 
+The input is the message (string) you want to send.'''
+   
+def publish_mqtt
+(message): 
+    wlan = network.WLAN(network.STA_IF) 
+    attempt_count = 0 
+    max_attempts = 1  # Set the max number of retries
+ 
+    while
+ attempt_count < max_attempts: 
+        global
+ adafruitIoUrl 
+        global
+ adafruitUsername 
+        global
+ adafruitAioKey 
+        global
+ feedName 
+        try
+: 
+            if not
+ wlan.isconnected(): 
+                print("Not connected to WiFi. Attempting to reconnect."
+) 
+                # Attempt to reconnect to WiFi here if necessary
+ 
+                # ...
+ 
+ 
+            mqtt = MQTTClient(client_id='esp32', server=adafruitIoUrl, 
+port=1883, 
+                              user=adafruitUsername, password=adafruitAioKey) 
+            mqtt.connect() 
+            mqtt.publish(feedName, message) 
+            # print("Published {} to {}.".format(message, feedName))
+ 
+            mqtt.disconnect() 
+            return  # If publish is successful, exit the function
+ 
+        except OSError as
+ e: 
+            print(f"Network error on attempt {attempt_count + 1}: {e}"
+) 
+        except Exception as e:  # Catch all exceptions
+ 
+            print(f"An MQTT error occurred on attempt {attempt_count + 1}: 
+
+{e}"
+) 
+        
+        attempt_count += 1 
+        sleep(1)  # Wait 1 second before retrying
+ 
+ 
+    print("Failed to publish after multiple attempts."
+) 
+ 
+    
+def receive_mqtt
+(): 
+    def sub_cb
+(topic, msg): 
+        global
+ incoming_message 
+        print((topic, msg)) 
+        incoming_message = msg 
+    
+    # Check wifi connection
+ 
+    wlan = network.WLAN(network.STA_IF) 
+    wlan.active(True
+) 
+    ip = wlan.ifconfig()[0] 
+    if ip == '0.0.0.0'
+: 
+        print("no wifi connection"
+) 
+        sys.exit() 
+    else
+: 
+        #print("connected to WiFi at IP", ip)
+ 
+        pass
+ 
+        
+    # Set up Adafruit connection
+ 
+    global
+ adafruitIoUrl 
+    global
+ adafruitUsername 
+    global
+ adafruitAioKey 
+    global
+ feedName 
+    #print("Connecting to Adafruit")
+ 
+    mqtt = MQTTClient(client_id='esp32',server=adafruitIoUrl, port='1883', 
+user=adafruitUsername, password=adafruitAioKey) 
+    mqtt.connect() 
+    time.sleep(0.5) 
+    #print("Connected!")
+ 
+    
+    # Receive message
+ 
+    mqtt.set_callback(sub_cb) 
+    mqtt.subscribe(feedName) 
+    mqtt.wait_msg() 
+    print("Received: {} from {}."
+.format(incoming_message, feedName)) 
+    return
+ incoming_message 
+ 
+ 
+
+ 
+# TCP setup
+ 
+# Encryption function
+ 
+def encrypt
+(command): 
+    key = 171 
+    result = b"\0\0\0"
+ + bytes([len(command)]) 
+    for i in command.encode('utf-8'
+): 
+        a = key ^ i 
+        key = a 
+        result += bytes([a]) 
+    return
+ result 
+ 
+# TCP command function
+ 
+def send_tcp_command
+(ip, command): 
+    port = 9999 
+    try
+: 
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
+        # print(f"Attempting to connect to {ip} on port {port}")
+ 
+        sock.connect((ip, port)) 
+        # print("Connection successful, sending command...")
+ 
+        sock.send(encrypt(command)) 
+        response = sock.recv(2048) 
+        sock.close() 
+        # print("Command sent, received response")
+ 
+        return
+ response 
+    except OSError as
+ e: 
+        print(f"Connection failed: {e}"
+) 
+        return None
+ 
+ 
+# Outlet IP
+ 
+outlet_IP = '10.0.0.35'
+ 
+ 
+ 
+ 
+# Pressure transducer setup
+ 
+# Set pin A2 for ADC
+ 
+adc_pin = Pin(34,mode=Pin.IN) 
+ 
+# Assign DAC and ADC converter objects to each pin
+ 
+adc = ADC(adc_pin) 
+ 
+# ADC configs
+ 
+adc.atten(ADC.ATTN_11DB) #change range of converter to be V_ref = 3.2
+ 
+adc_val = 0 # set val of ADC to dummy value to start off
+ 
+ 
+
+# Get ADC signal
+ 
+def get_adc
+(): 
+    return
+ adc.read_u16() 
+ 
+# ADC signal to pressure
+ 
+def map_adc_to_pressure(adc_val, adc_val_min=0, adc_val_max=7000, 
+pressure_min=0, pressure_max=15): 
+    return (adc_val_max - adc_val) / (adc_val_max - adc_val_min) * 
+(pressure_max - pressure_min) + pressure_min 
+ 
+# Get pressure value
+ 
+def pressure_val
+(): 
+    return
+ map_adc_to_pressure(get_adc()) 
+ 
+ 
+ 
+# Pump setup
+ 
+# Changing pump state (ON/OFF)
+ 
+def set_pump_state
+(state): 
+    global
+ pump_is_on 
+    pump_is_on = state 
+    command = '{"system":{"set_relay_state":{"state":1}}}' if state else 
+'{"system":{"set_relay_state":{"state":0}}}'
+ 
+    send_tcp_command(outlet_IP, command)  # Replace with your device's IP 
+address
+ 
+    print('Pump turned ON' if state else 'Pump turned OFF'
+) 
+ 
+# Get pump state (ON/OFF)
+ 
+def get_pump_state
+(): 
+    global
+ pump_is_on 
+    return
+ pump_is_on 
+ 
+ 
+ 
+# LED setup
+ 
+led = PWM(Pin(27, Pin.OUT), freq=500) 
+ 
+# Run LED
+ 
+def run_led
+(pattern): 
+    idx = 0 
+    while
+ idx < len(pattern): 
+        brightness, duration = pattern[idx], pattern[idx + 1]  # Get brightness 
+and duration
+ 
+        led.duty(int(brightness * 1023 / 100))  # Set brightness (convert from 
+percentage to 0-1023 scale)
+ 
+
+        time.sleep(duration)  # Wait for the duration
+ 
+        idx = idx + 2 
+ 
+ 
+# LED patterns
+ 
+LED_AUTO = [100, 0.05, 0, 0.05, 100, 0.05, 0, 0.5, 100, 0.05, 0, 0.05, 100, 
+0.05, 0, 0.5] 
+LED_ON = [0, 0.05, 5, 0.05, 10, 0.05, 15, 0.05, 20, 0.05, 25, 0.05, 30, 0.05, 
+35, 0.05, 40, 0.05, 45, 0.05, 50, 0.05, 55, 0.05, 60, 0.05, 65, 0.05, 70, 0.05, 
+75, 0.05, 80, 0.05, 85, 0.05, 90, 0.05, 95, 0.05, 100, 0.05] 
+LED_OFF = [100, 0.05, 95, 0.05, 90, 0.05, 85, 0.05, 80, 0.05, 75, 0.05, 70, 
+0.05, 65, 0.05, 60, 0.05, 55, 0.05, 50, 0.05, 45, 0.05, 40, 0.05, 35, 0.05, 30, 
+0.05, 25, 0.05, 20, 0.05, 15, 0.05, 10, 0.05, 5, 0.05, 0, 0.05] 
+ 
+ 
+ 
+# Speaker setup
+ 
+speaker = Pin(33, mode=Pin.OUT) 
+pwm_speaker = PWM(speaker, freq=1, duty=50) 
+ 
+def play_notes
+(notes): 
+    for freq, duration in
+ notes: 
+        if
+ freq == 0: 
+            pwm_speaker.deinit()  # Turn off PWM if frequency is 0 (silence)
+ 
+        else
+: 
+            pwm_speaker.init(freq=freq, duty=512)  # Reinitialize with new 
+frequency
+ 
+        sleep(duration) 
+    pwm_speaker.deinit()  # Optionally turn off PWM after playing all notes
+ 
+ 
+# Speaker notes
+ 
+initialization_notes = [(261, 0.4), (329, 0.2), (392, 0.2), (523, 0.4)] 
+start_up_notes = [(261, 0.4), (329, 0.2), (392, 0.2), (523, 0.4), (392, 0.4), 
+(493, 0.2), (587, 0.2), (784, 0.5)] 
+shut_down_notes = [(261, 0.4),  # C4
+ 
+    (329, 0.2),  # E4
+ 
+    (392, 0.2),  # G4
+ 
+    (523, 0.4),  # G4
+ 
+ 
+    # Descend by a fifth, then a fourth
+ 
+    (392, 0.4),  # G4
+ 
+    (293, 0.6),  # D4
+ 
+    (0, 0.02), 
+    (293, 0.2), 
+    # Ascend by a fifth, then descend by a major sixth
+ 
+
+    (329, 0.2),  # A4
+ 
+    (261, 0.6),  # C4
+ 
+] 
+ 
+ 
+ 
+# Modes setup
+ 
+# Define modes and a variable to hold the current mode
+ 
+ALWAYS_ON = 0 
+ALWAYS_OFF = 1 
+AUTO = 2 
+ 
+# Initialize button with an internal pull-up resistor
+ 
+button = Pin(13, mode=Pin.IN, pull=Pin.PULL_UP) 
+ 
+# Variables needed for debouncing
+ 
+last_press_time = 0 
+debounce_interval = 1000  # 200 ms debounce time
+ 
+ 
+# Function to change the operation mode
+ 
+def change_mode
+(): 
+    global
+ current_mode 
+    current_mode = (current_mode + 1) % 3 
+    mode_str = ["ALWAYS ON", "ALWAYS OFF", "AUTO"
+] 
+    print("Mode changed to:"
+, mode_str[current_mode]) 
+    if
+ current_mode == AUTO: 
+        run_led(LED_AUTO) 
+    elif
+ current_mode == ALWAYS_ON: 
+        run_led(LED_ON) 
+    else
+: 
+        run_led(LED_OFF) 
+ 
+    
+# Button press handler with debouncing
+ 
+def button_press_handler
+(pin): 
+    global
+ current_mode 
+    global
+ last_press_time 
+    current_time = ticks_ms() 
+    if
+ current_time - last_press_time > debounce_interval: 
+        sleep(0.1) 
+        # Check the button state again to confirm it's still pressed
+ 
+        if not
+ pin.value():   
+            last_press_time = current_time 
+            change_mode() 
+        
+
+def get_mode
+(): 
+    mode_str = ["ALWAYS ON", "ALWAYS OFF", "AUTO"
+] 
+    return
+ mode_str[current_mode] 
+ 
+# Assign the interrupt to the button pin
+ 
+button.irq(handler=button_press_handler, trigger=Pin.IRQ_FALLING) 
+ 
+ 
+ 
+# Leak detection
+ 
+pressure_readings = [] 
+num_cycles_for_leak_detection = 10  # Number of cycles to measure rate of 
+change
+ 
+leak_threshold = -0.5  # Threshold for rate of change to indicate a leak
+ 
+report_interval = 60  # Time in seconds between reports
+ 
+last_report_time = 0  # Time of the last leak report
+ 
+ 
+def update_pressure_readings
+(new_pressure): 
+    # Append new pressure and keep only the last 
+'num_cycles_for_leak_detection' readings
+ 
+    global
+ pressure_readings 
+    pressure_readings.append(new_pressure) 
+    if
+ len(pressure_readings) > num_cycles_for_leak_detection: 
+        pressure_readings.pop(0) 
+ 
+def calculate_rate_of_change
+(): 
+    # Calculate the average rate of change over the specified number of cycles
+ 
+    if
+ len(pressure_readings) == num_cycles_for_leak_detection: 
+        total_change = pressure_readings[-1] - pressure_readings[0] 
+        rate_of_change = total_change / num_cycles_for_leak_detection 
+        return
+ rate_of_change 
+    return 0  # Default rate of change if not enough data
+ 
+ 
+def check_for_leak
+(): 
+    global
+ last_report_time 
+    current_time = time.time() 
+    # Check if the rate of change is below the threshold
+ 
+    rate_of_change = calculate_rate_of_change() 
+    if
+ rate_of_change < leak_threshold: 
+        if
+ (current_time - last_report_time) > report_interval: 
+            print("Leak Detected!"
+) 
+            publish_mqtt("Leak Detected!"
+) 
+            last_report_time = current_time  # Update the last reported time
+ 
+    
+ 
+
+ 
+# Program Initialization
+ 
+print('Initializing...'
+) 
+publish_mqtt('Initializing...'
+) 
+ 
+# Mode initialization
+ 
+current_mode = AUTO  # Start the system in AUTO mode
+ 
+print('Initializing in', get_mode(), 'mode'
+) 
+play_notes(initialization_notes) 
+run_led(LED_AUTO) 
+sleep(1) 
+ 
+# Pump initialization
+ 
+pump_is_on = False
+ 
+set_pump_state(False
+) 
+print('Initializing pump: OFF'
+) 
+sleep(1) 
+ 
+triggered = 0 
+wait_time = 5 
+last_sent = time.time() 
+publish_interval = 5  # Send every 5 seconds
+ 
+ 
+sleep(1) 
+ 
+ 
+ 
+# Actuation
+ 
+while True
+: 
+    current_time = time.time() 
+    pressure = pressure_val() 
+    print("Pressure:", "%.2f" % round(pressure,2), "psi"
+) 
+    update_pressure_readings(pressure) 
+    # Leak check
+ 
+    check_for_leak() 
+ 
+    # Check if it's time to publish
+ 
+    if
+ current_time - last_sent >= publish_interval: 
+        # print('published!!')
+ 
+        publish_mqtt(str(pressure)) 
+        last_sent = current_time  # Update the last sent time
+ 
+ 
+ 
+    # Auto mode
+ 
+    if
+ current_mode == AUTO: 
+
+        # Auto mode pump action
+ 
+        if pressure < 8  and triggered == 0 and not
+ get_pump_state(): 
+            print('Pump is OFF, turning on'
+) 
+            publish_mqtt(str(pressure)) 
+            play_notes(start_up_notes) 
+            set_pump_state(True
+) 
+            triggered = wait_time 
+        elif pressure >= 8 and triggered == 0 and
+ get_pump_state(): 
+            print('Pump is ON, turning off'
+) 
+            publish_mqtt(str(pressure)) 
+            set_pump_state(False
+) 
+            play_notes(shut_down_notes) 
+            triggered = wait_time 
+        
+        # Trigger delay
+ 
+        if
+ triggered != 0: 
+            triggered -= 1 
+            # print('Waiting', triggered, 's before next action.')
+ 
+ 
+    elif
+ current_mode == ALWAYS_ON: 
+        # Always on logic
+ 
+        if not
+ get_pump_state(): 
+            print('Pump is OFF, turning ON'
+) 
+            play_notes(start_up_notes) 
+            send_tcp_command(outlet_IP, 
+'{"system":{"set_relay_state":{"state":1}}}'
+) 
+            set_pump_state(True
+) 
+ 
+    elif
+ current_mode == ALWAYS_OFF: 
+        # Always off logic
+ 
+        if
+ get_pump_state(): 
+            print('Pump is ON, turning OFF'
+) 
+            send_tcp_command(outlet_IP, 
+'{"system":{"set_relay_state":{"state":0}}}'
+) 
+            set_pump_state(False
+) 
+            play_notes(shut_down_notes) 
+ 
+    sleep(1)  # Sleep for 1 second before the next loop iteration 
+Button Code: 
+def bhandler(pin): 
+    global counter 
+    global state 
+    global last_time 
+
+    global t 
+    global delta_t 
+     # TODO: Debounce code from lecture 
+    t = ticks_ms() 
+    delta_t = t - last_time 
+    state = 0  # Make State = 0 is button is not pressed, or is 
+bouncing 
+    if button() == 1 and delta_t > 200:  # Only count if button 
+pressed AND more than 200ms have passed since last press 
+        state = button() 
+        last_time = t 
+        counter += 1 
+        report(button) 
+        print('Time = ' + str(t))  # Print for 
+debugging/visualization purposes 
+        print('Delta_t = ' + str(delta_t))  # Print for 
+debugging/visualization purposes 
+ 
+# Initialize pin with ISR 
+button = Pin(13, mode=Pin.IN, pull=Pin.PULL_UP) 
+button.irq(handler=bhandler,trigger=Pin.IRQ_RISING) 
+ 
+# # for loop to print button state 
+# for i in range(1000): 
+#     print(button.value()) 
+#     sleep(0.1)

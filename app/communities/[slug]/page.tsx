@@ -1,6 +1,10 @@
+"use client"
+
 import { notFound } from "next/navigation"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, ExternalLink } from "lucide-react"
 import Link from "next/link"
+import { ScrollReveal } from "@/components/scroll-reveal"
+import { useEffect } from "react"
 
 const communitiesData = {
   "formula-electric-berkeley": {
@@ -47,11 +51,18 @@ The project required coordinating with other subsystem teams including chassis, 
   },
   skydeck: {
     name: "SkyDeck",
-    role: "Member",
+    role: "Member - Batch 18",
     image: "/skydeck-berkeley.jpg",
     description:
-      "UC Berkeley's premier startup accelerator for entrepreneurial learning and technology commercialization.",
-    fullDescription: `SkyDeck is UC Berkeley's premier startup accelerator and one of the top university-affiliated accelerators in the world. As a member, I engaged deeply with the entrepreneurial ecosystem, learning the processes and strategies involved in technology commercialization and venture creation.
+      "Selected in Batch 18 Incubator. UC Berkeley's premier startup accelerator for entrepreneurial learning and technology commercialization.",
+    documents: [
+      {
+        title: "Pitch Deck - Litrix",
+        url: "https://docs.google.com/presentation/d/1wjtY6hmsvJk83DgsNc-WgsPXIdetFjjOm3gSBn0Z3Z0/edit?usp=sharing",
+        type: "presentation",
+      },
+    ],
+    fullDescription: `Selected in Batch 18 Incubator. SkyDeck is UC Berkeley's premier startup accelerator and one of the top university-affiliated accelerators in the world. As a member, I engaged deeply with the entrepreneurial ecosystem, learning the processes and strategies involved in technology commercialization and venture creation.
 
 The program provided exposure to successful entrepreneurs, venture capitalists, and industry leaders through regular talks, workshops, and mentorship sessions. I learned about the complete startup journey from ideation and customer discovery through product development, go-to-market strategy, and fundraising.
 
@@ -59,7 +70,7 @@ Participation in SkyDeck enhanced my understanding of how to translate technical
 
 Networking with fellow founders and the broader Berkeley entrepreneurship community provided valuable perspectives on different approaches to innovation and the diverse paths technical professionals can take in their careers.`,
     achievements: [
-      "Engaged with UC Berkeley's premier startup accelerator program",
+      "Selected for Batch 18 of UC Berkeley's premier startup accelerator",
       "Learned technology commercialization and venture creation processes",
       "Networked with successful entrepreneurs and VCs",
       "Developed understanding of market analysis and business models",
@@ -103,19 +114,26 @@ I developed skills in customer segmentation, value proposition design, and busin
       "Business Model Development",
       "Interview Techniques",
     ],
+    documents: [
+      {
+        title: "Pitch Deck - Litrix",
+        url: "https://docs.google.com/presentation/d/1wjtY6hmsvJk83DgsNc-WgsPXIdetFjjOm3gSBn0Z3Z0/edit?usp=sharing",
+      },
+    ],
   },
   "courtyard-ventures": {
     name: "Courtyard Ventures",
-    role: "Member",
+    role: "Fund III Undergraduate VC Intern",
     image: "/courtyard-ventures.jpg",
-    description: "Berkeley venture capital and entrepreneurship community engagement.",
-    fullDescription: `Courtyard Ventures represents Berkeley's vibrant venture capital and entrepreneurship community. As a member, I explored the intersection of technology innovation and startup financing, gaining insights into how venture capital firms evaluate and support early-stage companies.
+    description:
+      "Sourced and analyzed startups across fintech, deeptech, climate tech, and mobility sectors for venture capital funds.",
+    fullDescription: `As a Fund III Undergraduate VC Intern at Courtyard Ventures, I gained hands-on experience in the venture capital industry, focusing on early-stage startup evaluation and investment analysis.
 
-Through participation in Courtyard Ventures activities, I learned about the venture capital perspective on startup investment, including how VCs assess market opportunities, evaluate founding teams, and structure deals. This knowledge is valuable for anyone working in technology and innovation, providing insight into what makes technologies and companies attractive for investment.
+My primary responsibilities included sourcing promising startups and conducting comprehensive due diligence on both startups and VC funds across the nation. I proactively identified and evaluated opportunities in high-growth sectors including fintech, deeptech, climate tech, and mobility and transportation, with a particular focus on ventures founded at UC Berkeley.
 
-The community provided opportunities to engage with both active investors and fellow entrepreneurs, creating a rich learning environment for understanding different aspects of the startup ecosystem. Discussions covered topics ranging from term sheets and cap tables to go-to-market strategies and exit planning.
+Through this role, I developed expertise in assessing market opportunities, analyzing business models, evaluating founding teams, and understanding competitive landscapes. I worked closely with the investment team to research emerging technologies, track industry trends, and identify potential investment opportunities that aligned with the fund's thesis.
 
-This experience enhanced my ability to evaluate technical projects not just from an engineering standpoint but also through the lens of commercial viability and investment potential.`,
+This experience provided invaluable insight into the venture capital decision-making process, from initial startup discovery through detailed financial and technical analysis. I learned to evaluate companies through multiple lenses—market potential, technical innovation, team capabilities, and scalability—while understanding how these factors influence investment decisions at different stages of company growth.`,
     achievements: [
       "Engaged with Berkeley's VC and entrepreneurship community",
       "Learned venture capital investment evaluation criteria",
@@ -134,31 +152,41 @@ This experience enhanced my ability to evaluate technical projects not just from
   },
   "berkeley-venture-capital": {
     name: "Berkeley Venture Capital",
-    role: "Member",
+    role: "Vice President - External and Sourcing",
     image: "/berkeley-venture-capital.jpg",
-    description: "Student-run VC organization focused on early-stage technology startup evaluation.",
-    fullDescription: `Berkeley Venture Capital is a student-run venture capital organization that provides hands-on experience in evaluating and supporting early-stage technology startups. As a member, I participated in the complete investment evaluation process from initial screening through due diligence and portfolio management.
+    description:
+      "Led the External and Sourcing committee for Berkeley's student-run VC organization, managing startup databases and facilitating funding connections.",
+    fullDescription: `As Vice President of External and Sourcing at Berkeley Venture Capital, I led strategic initiatives to expand the organization's startup network and strengthen connections within the venture capital ecosystem. My role focused on building and maintaining relationships with both emerging startups and established investors across the Bay Area and beyond.
 
-The organization operates as a real venture fund, providing members with practical experience in investment analysis, market research, and startup evaluation. I learned to assess technical startups across multiple dimensions including technology differentiation, market opportunity, team capability, competitive landscape, and financial projections.
+I spearheaded the development and maintenance of the Berkeley Startup Database, a comprehensive repository of 150+ startups spanning diverse industry verticals including DeepTech, EdTech, B2B SaaS, and GreenTech. This database served as a critical resource for investment analysis, market research, and ecosystem mapping, requiring continuous curation and validation to ensure data accuracy and relevance.
 
-Participation involved analyzing pitch decks, conducting due diligence interviews with founders, and presenting investment recommendations to the broader team. This process taught me how to quickly understand new technologies and business models, identify key risks and opportunities, and make data-driven investment decisions.
+A key highlight of my tenure was co-hosting the BVC Startup Pitch Competition, where I served on the decision-making committee that evaluated numerous innovative ventures and ultimately awarded a $20,000 cash prize to Sales Patriot, a promising B2B sales optimization platform. This experience provided deep insights into investment criteria, pitch evaluation, and the dynamics of early-stage funding decisions.
 
-The experience also provided exposure to portfolio management and value-add activities for invested companies. Working with portfolio companies offered insights into the challenges startups face at various stages and how investors can support their success beyond just providing capital.`,
+Leading the External and Sourcing committee, I orchestrated multiple touchpoints with the startup ecosystem, including fireside chats with prominent venture capitalists, networking sessions with founders, and strategic meetings with accelerator programs. I actively engaged with startup founders to understand their funding needs, growth challenges, and market positioning, facilitating introductions to leading VC firms including Pear VC, Berkeley SkyDeck, Nexus Ventures, and Andreessen Horowitz (a16z).
+
+Through my initiative to organize virtual networking sessions and structured founder outreach programs, I contributed to a 20% increase in successful funding rounds among our portfolio companies, directly strengthening the Berkeley startup ecosystem and enhancing investor relations. My work in maintaining real-time updates across our startup database enabled BVC to stay ahead of market trends and provide timely insights to both internal teams and external partners.`,
     achievements: [
-      "Participated in student-run venture capital fund",
-      "Conducted due diligence on early-stage startups",
-      "Analyzed market opportunities and competitive landscapes",
-      "Evaluated founding teams and technical differentiation",
-      "Presented investment recommendations",
-      "Engaged in portfolio company support",
+      "Led External and Sourcing committee as Vice President",
+      "Built and maintained database of 150+ startups across DeepTech, EdTech, B2B SaaS, and GreenTech",
+      "Co-hosted BVC Startup Pitch Competition with $20,000 prize pool",
+      "Served on decision committee that awarded funding to Sales Patriot",
+      "Organized fireside chats with VCs and networking sessions with founders",
+      "Facilitated introductions to top-tier VC firms (Pear VC, SkyDeck, Nexus, a16z)",
+      "Increased successful funding rounds by 20% through structured networking initiatives",
+      "Maintained real-time startup database for market insights and investor outreach",
+      "Led committee-wide initiatives to expand Berkeley's startup ecosystem",
     ],
     skills: [
-      "Investment Analysis",
+      "Venture Capital Operations",
+      "Startup Sourcing & Evaluation",
+      "Database Management",
+      "Investor Relations",
+      "Ecosystem Building",
       "Due Diligence",
+      "Pitch Competition Judging",
+      "Founder Engagement",
+      "Strategic Networking",
       "Market Research",
-      "Financial Modeling",
-      "Technology Evaluation",
-      "Presentation Skills",
     ],
   },
   "fung-institute": {
@@ -230,6 +258,10 @@ export default async function CommunityDetailPage({ params }: { params: Promise<
   const { slug } = await params
   const community = communitiesData[slug as keyof typeof communitiesData]
 
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
   if (!community) {
     notFound()
   }
@@ -267,18 +299,58 @@ export default async function CommunityDetailPage({ params }: { params: Promise<
         </div>
       </section>
 
-      {/* Community Image */}
-      <section className="py-8 px-4 bg-secondary/10">
-        <div className="container mx-auto max-w-6xl">
-          <div className="relative aspect-video bg-card border border-border rounded-lg overflow-hidden">
-            <img
-              src={community.image || "/placeholder.svg"}
-              alt={community.name}
-              className="w-full h-full object-cover"
-            />
+      {/* Documents Section */}
+      {community.documents && community.documents.length > 0 && (
+        <section className="py-8 px-4">
+          <div className="container mx-auto max-w-6xl">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {community.documents.map((doc, i) => (
+                <a
+                  key={i}
+                  href={doc.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group relative bg-card border border-border rounded-lg p-6 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="p-3 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors duration-300">
+                      <ExternalLink className="w-6 h-6 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors duration-300">
+                        {doc.title}
+                      </h3>
+                      <p className="text-sm text-muted-foreground">Click to view document</p>
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
+
+      {/* Community Image */}
+      {community.image &&
+        slug !== "nsf-icorps" &&
+        slug !== "skydeck" &&
+        slug !== "courtyard-ventures" &&
+        slug !== "berkeley-venture-capital" &&
+        slug !== "fung-institute" && (
+          <ScrollReveal>
+            <section className="py-8 px-4 bg-secondary/10">
+              <div className="container mx-auto max-w-6xl">
+                <div className="relative aspect-video bg-card border border-border rounded-lg overflow-hidden">
+                  <img
+                    src={community.image || "/placeholder.svg"}
+                    alt={community.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
+            </section>
+          </ScrollReveal>
+        )}
 
       {/* Gallery Section */}
       {community.gallery && (

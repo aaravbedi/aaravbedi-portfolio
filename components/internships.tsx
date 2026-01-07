@@ -1,6 +1,9 @@
 "use client"
 
 import { ScrollReveal } from "@/components/scroll-reveal"
+import type React from "react"
+
+import { useState, useRef } from "react"
 import Link from "next/link"
 
 export function Internships() {
@@ -40,64 +43,109 @@ export function Internships() {
   ]
 
   return (
-    <section id="internships" className="py-20 px-4 bg-secondary/10 relative overflow-hidden">
-      <div className="absolute top-0 left-1/4 w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
+    <section id="internships" className="py-32 px-6 bg-secondary/5 relative overflow-hidden">
+      <div className="absolute top-0 left-1/4 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
 
       <div className="container mx-auto max-w-6xl relative z-10">
         <ScrollReveal>
-          <h2 className="text-3xl md:text-4xl font-bold mb-12 font-mono text-primary">{"</Internships>"}</h2>
+          <h2 className="text-4xl md:text-5xl font-bold mb-16 font-mono text-primary">{"</Internships>"}</h2>
         </ScrollReveal>
 
-        <div className="space-y-8">
+        <div className="space-y-10">
           {internships.map((internship, i) => (
             <ScrollReveal key={i} delay={100} direction="up">
-              <Link href={`/internships/${internship.slug}`}>
-                <div className="bg-card/50 backdrop-blur-sm border border-border rounded-lg p-8 hover:border-primary/50 hover:shadow-xl hover:shadow-primary/10 transition-all duration-500 cursor-pointer hover:-translate-y-1">
-                  <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
-                    <div className="flex items-start gap-4">
-                      <div className="flex-shrink-0 w-16 h-16 bg-background border border-border rounded-lg flex items-center justify-center p-2">
+              <InteractiveInternshipCard href={`/internships/${internship.slug}`}>
+                <div className="bg-card/40 backdrop-blur-md border border-border/50 rounded-2xl p-8 hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 cursor-pointer hover:-translate-y-1 group">
+                  <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-6">
+                    <div className="flex items-start gap-5">
+                      <div className="flex-shrink-0 w-16 h-16 bg-background/80 border border-border/50 rounded-xl flex items-center justify-center p-2 group-hover:border-primary/40 transition-all duration-300 group-hover:shadow-lg">
                         <img
                           src={internship.logo || "/placeholder.svg"}
                           alt={internship.company}
-                          className="w-full h-full object-contain"
+                          className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
                         />
                       </div>
                       <div>
                         <h3 className="text-2xl font-bold mb-2 group-hover:text-primary transition-colors">
                           {internship.company}
                         </h3>
-                        <p className="text-lg text-primary font-medium">{internship.role}</p>
+                        <p className="text-lg text-primary font-semibold">{internship.role}</p>
                         <p className="text-sm text-muted-foreground mt-1">{internship.location}</p>
                       </div>
                     </div>
-                    <span className="text-muted-foreground mt-2 md:mt-0 font-mono text-sm bg-primary/10 px-3 py-1 rounded-md">
+                    <span className="text-muted-foreground mt-3 md:mt-0 font-mono text-sm bg-primary/10 px-4 py-2 rounded-lg border border-primary/20">
                       {internship.period}
                     </span>
                   </div>
 
-                  <p className="text-muted-foreground mb-6 leading-relaxed">{internship.description}</p>
+                  <p className="text-muted-foreground mb-6 leading-relaxed text-base">{internship.description}</p>
 
-                  <ul className="space-y-2 mb-6">
+                  <ul className="space-y-3 mb-6">
                     {internship.achievements.map((achievement, j) => (
                       <ScrollReveal key={j} delay={200 + j * 50}>
-                        <li className="flex items-start gap-2 text-muted-foreground hover:text-foreground transition-colors duration-300">
-                          <span className="text-primary mt-1 text-xl">•</span>
-                          <span>{achievement}</span>
+                        <li className="flex items-start gap-3 text-muted-foreground group-hover:text-foreground transition-colors duration-300">
+                          <span className="text-primary mt-0.5 text-lg font-bold">•</span>
+                          <span className="leading-relaxed">{achievement}</span>
                         </li>
                       </ScrollReveal>
                     ))}
                   </ul>
 
-                  <div className="flex items-center gap-2 text-primary font-medium">
+                  <div className="flex items-center gap-2 text-primary font-semibold">
                     <span>Learn More</span>
-                    <span>→</span>
+                    <span className="group-hover:translate-x-2 transition-transform duration-300">→</span>
                   </div>
                 </div>
-              </Link>
+              </InteractiveInternshipCard>
             </ScrollReveal>
           ))}
         </div>
       </div>
     </section>
+  )
+}
+
+function InteractiveInternshipCard({ children, href }: { children: React.ReactNode; href: string }) {
+  const [tilt, setTilt] = useState({ x: 0, y: 0 })
+  const cardRef = useRef<HTMLDivElement>(null)
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return
+
+    const rect = cardRef.current.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+
+    const centerX = rect.width / 2
+    const centerY = rect.height / 2
+
+    const tiltX = (y - centerY) / 50
+    const tiltY = (centerX - x) / 50
+
+    setTilt({ x: tiltX, y: tiltY })
+  }
+
+  const handleMouseLeave = () => {
+    setTilt({ x: 0, y: 0 })
+  }
+
+  const handleClick = () => {
+    sessionStorage.setItem("portfolioScrollPosition", window.scrollY.toString())
+  }
+
+  return (
+    <Link href={href} onClick={handleClick}>
+      <div
+        ref={cardRef}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        style={{
+          transform: `perspective(1200px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+          transition: "transform 0.3s ease-out",
+        }}
+      >
+        {children}
+      </div>
+    </Link>
   )
 }
