@@ -71,7 +71,7 @@ export function About() {
                 asChild
               >
                 <a
-                  href="https://drive.google.com/file/d/1Z3RUtC2qx4qds1OavwHPiovulPDr8btA/view?usp=sharing"
+                  href="https://drive.google.com/file/d/1S2mh4IIxST6ns2L74zJsI3hZ7_iWsWj3/view?usp=sharing"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
