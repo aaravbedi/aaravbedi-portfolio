@@ -4,7 +4,7 @@ import { notFound } from "next/navigation"
 import { ArrowLeft, ExternalLink } from "lucide-react"
 import Link from "next/link"
 import { ScrollReveal } from "@/components/scroll-reveal"
-import { useEffect } from "react"
+import { useEffect, use } from "react"
 
 const communitiesData = {
   "formula-electric-berkeley": {
@@ -254,8 +254,8 @@ The role also involves exploring applications of quantum computing to real-world
   },
 }
 
-export default async function CommunityDetailPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params
+export default function CommunityDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = use(params)
   const community = communitiesData[slug as keyof typeof communitiesData]
 
   useEffect(() => {

@@ -65,8 +65,8 @@ I gained extensive experience with Product Data Management (PDM) systems, releas
   },
 }
 
-export default function InternshipDetailPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = params
+export default function InternshipDetailPage({ params }: { params: { slug: string } }) {
+  const slug = params.slug
   const internship = internshipsData[slug as keyof typeof internshipsData]
 
   if (!internship) {
