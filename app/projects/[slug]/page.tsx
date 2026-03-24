@@ -1,6 +1,3 @@
-"use client"
-
-import { useEffect } from "react"
 import { notFound } from "next/navigation"
 import { ArrowLeft, ExternalLink } from "lucide-react"
 import Link from "next/link"
@@ -187,10 +184,6 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   if (!project) {
     notFound()
   }
-
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
 
   return (
     <div className="min-h-screen bg-background">

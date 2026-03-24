@@ -1,6 +1,3 @@
-"use client"
-
-import { useEffect } from "react"
 import { notFound } from "next/navigation"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
@@ -65,17 +62,13 @@ I gained extensive experience with Product Data Management (PDM) systems, releas
   },
 }
 
-export default function InternshipDetailPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = params
+export default async function InternshipDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
   const internship = internshipsData[slug as keyof typeof internshipsData]
 
   if (!internship) {
     notFound()
   }
-
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
 
   return (
     <div className="min-h-screen bg-background">
