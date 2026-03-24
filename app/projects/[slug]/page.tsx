@@ -1,7 +1,4 @@
-"use client"
-
-import { useEffect, use } from "react"
-import { notFound, redirect } from "next/navigation"
+import { notFound } from "next/navigation"
 import { ArrowLeft, ExternalLink } from "lucide-react"
 import Link from "next/link"
 
@@ -180,16 +177,12 @@ The data collected by the helmet can be used for immediate safety alerts, long-t
   },
 }
 
-export default function ProjectDetailPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = use(params)
+export default async function ProjectDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
   const project = projectsData[slug as keyof typeof projectsData]
 
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
-
   if (!project) {
-    redirect("/")
+    notFound()
   }
 
   return (
