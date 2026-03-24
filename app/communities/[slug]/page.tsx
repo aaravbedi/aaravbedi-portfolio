@@ -1,6 +1,6 @@
 "use client"
 
-import { notFound } from "next/navigation"
+import { redirect } from "next/navigation"
 import { ArrowLeft, ExternalLink } from "lucide-react"
 import Link from "next/link"
 import { ScrollReveal } from "@/components/scroll-reveal"
@@ -263,7 +263,7 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ slug
   }, [])
 
   if (!community) {
-    notFound()
+    redirect("/")
   }
 
   return (

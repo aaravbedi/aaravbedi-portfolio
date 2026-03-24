@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, use } from "react"
-import { notFound } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
 import { ArrowLeft, ExternalLink } from "lucide-react"
 import Link from "next/link"
 
@@ -184,13 +184,13 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ slug: 
   const { slug } = use(params)
   const project = projectsData[slug as keyof typeof projectsData]
 
-  if (!project) {
-    notFound()
-  }
-
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
+
+  if (!project) {
+    redirect("/")
+  }
 
   return (
     <div className="min-h-screen bg-background">
